@@ -1,0 +1,63 @@
+import json
+import urllib3
+http =urllib3.PoolManager()
+import uuid 
+
+def SendMsg(cust_name,cust_email,sessionId,intentName):
+    data = {"cust_name":cust_name,"cust_email":cust_email,"intentName":intentName,"sessionId":sessionId}
+    encoded_data = json.dumps(data).encode('utf-8')
+    r = http.request('POST',"http://bfc28901.ngrok.io/districtwise",headers={'content-type':'application/json'},body=encoded_data)
+    return r.data.decode('utf-8')
+
+def lambda_handler(event, context):
+    cust_name =  event['currentIntent']['slots']['cust_name']
+    cust_email = event['currentIntent']['slots']['cust_email']
+    sessionId = str(uuid.uuid4())
+    intentName = event['currentIntent']['name']
+        
+    r=SendMsg(cust_name,cust_email,sessionId,intentName)
+    #a=json.dumps(json.loads(r)["fulfillmentText"]).replace("\"","")
+    return  {
+        "dialogAction" : {
+        "type" : "Close",
+        "fulfillmentState" : "Fulfilled",
+        "message": {       
+            "contentType": "PlainText",
+            "content":  "Worldwide map and infected count of countries sent to your mail id"
+            },  
+        }
+    }
+
+https://frozen-headland-17112.herokuapp.com
+
+import json
+import urllib3
+http =urllib3.PoolManager()
+import uuid 
+
+def SendMsg(cust_name,cust_phone,cust_email,cust_pin,sessionId,intentName):
+    data = {"cust_name":cust_name,"cust_phone":cust_phone,"cust_email":cust_email,"cust_pin":cust_pin,"intentName":intentName,"sessionId":sessionId}
+    encoded_data = json.dumps(data).encode('utf-8')
+    response = http.request('POST',"http://bfc28901.ngrok.io/districtwise",headers={'content-type':'application/json'},body=encoded_data)
+    return response.data.decode('utf-8')
+
+def lambda_handler(event, context):
+        cust_name =  event['currentIntent']['slots']['cust_name']
+        cust_email = event['currentIntent']['slots']['cust_email']
+        cust_phone = event['currentIntent']['slots']['cust_phone']
+        cust_pin = event['currentIntent']['slots']['cust_pin']
+        sessionId = str(uuid.uuid4())
+        intentName = event['currentIntent']['name']
+        result=SendMsg(cust_name,cust_phone,cust_email,cust_pin,sessionId,intentName)
+        a=json.dumps(json.loads(result)["fulfillmentText"]).replace("\"","")
+        return  {
+            "dialogAction" : {
+            "type" : "Close",
+            "fulfillmentState" : "Fulfilled",
+            "message": {       
+                "contentType": "PlainText",
+                "content": a
+                },  
+            }
+        }
+   
